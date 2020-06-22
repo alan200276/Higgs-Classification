@@ -1,0 +1,29 @@
+#import model HC_NLO_X0_UFO-heft
+#generate p p > x0 /t [QCD] @0
+#add process p p > x0 j /t[QCD] @1
+#add process p p > x0 j j /t QED<=1[QCD] @2
+
+#output /u4/alan/higgsproduction_1/ggh
+
+launch /u4/alan/higgsproduction_1/ggh
+
+
+set pdlabel lhapdf
+set nevents 100000
+set lhaid 91500 #PDF4LHC15_nnlo_mc
+set ebeam1 6500
+set ebeam2 6500
+#set dynamical_scale_choice 2
+
+set parton_shower PYTHIA8
+set ickkw 3
+#set jetalgo -1
+#set jetradius 0.5
+set ptj 15.0
+#set etaj 4.0
+
+#set Qcut 30.0
+#set njmax 2 
+
+set pt_min_pdg {25:350}
+set pt_max_pdg {25:700}

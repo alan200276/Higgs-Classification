@@ -1,0 +1,26 @@
+#import model loop_sm-no_b_mass
+#generate p p > h j j $$ w+ w- z [QCD]
+#output /u4/alan/higgsproduction_1/vbf
+
+launch /u4/alan/higgsproduction_1/vbf
+
+
+set pdlabel lhapdf
+set nevents 100000
+set lhaid 91500 #PDF4LHC15_nnlo_mc
+set ebeam1 6500
+set ebeam2 6500
+#set dynamical_scale_choice 2
+
+set parton_shower PYTHIA8
+set ickkw 3
+#set jetalgo -1
+#set jetradius 0.5
+set ptj 15.0
+#set etaj 1000.0
+
+#set Qcut 30.0
+#set njmax 2 
+
+set pt_min_pdg {25:350}
+set pt_max_pdg {25:700}
