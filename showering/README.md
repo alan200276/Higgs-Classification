@@ -42,7 +42,7 @@ If nothing wrong, then you can do showering and preselection in fthis way
     ```
 * truth_dir: the truth record for two b quarks
      ```
-		// This will result in a .csv file with format:
+    // This will result in a .csv file with format:
     // b_E, b_Px, b_Py, b_Pz, bbar_E, bbar_Px, bbar_Py, bbar_Pz, evtweight \n > an event
     ```
 * out.log: The presesction and Xection after matching will be in the bottom of this file.
