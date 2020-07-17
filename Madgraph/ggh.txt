@@ -3,9 +3,9 @@
 #add process p p > x0 j /t[QCD] @1
 #add process p p > x0 j j /t QED<=1[QCD] @2
 
-#output /u4/alan/higgsproduction_1/ggh
+#output <path>/ggh
 
-launch /u4/alan/higgsproduction_1/ggh
+launch <path>/ggh
 
 
 set pdlabel lhapdf
