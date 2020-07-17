@@ -3,10 +3,10 @@
 #generate p p > v h [QCD] @0
 #add process p p > v h j [QCD]@1
 
-#output /u4/alan/higgsproduction_1/vh
+#output <path>/vh
 
 
-launch /u4/alan/higgsproduction_1/vh
+launch <path>/vh
 
 
 
@@ -15,17 +15,10 @@ set nevents 100000
 set lhaid 91500 #PDF4LHC15_nnlo_mc
 set ebeam1 6500
 set ebeam2 6500
-#set dynamical_scale_choice 2
 
 set parton_shower PYTHIA8
 set ickkw 3
-#set jetalgo -1
-#set jetradius 0.5
 set ptj 15.0
-#set etaj 4.0
-
-#set Qcut 30.0
-#set njmax 1 
 
 set pt_min_pdg {25:350}
 set pt_max_pdg {25:700}
