@@ -19,7 +19,7 @@ wget http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/H
  * the details are in `ggh.txt`
  
  
- ### VBF, Vh and ttH
+ ### VBF, VH and ttH
 1.Using the folloing comment to excute and generate ggF samples.
  
  ```
