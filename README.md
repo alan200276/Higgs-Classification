@@ -7,7 +7,7 @@
 
 ---
 
-## Showering :
+## showering :
 
 - Shower and Hadronization, jets merging with FxFx, all matching with PYTHIA8
 
@@ -16,6 +16,14 @@
 ---
 
 ## analysis
+
+- create full-event images, jet images
+
+- BDT, 2CNN
+
+- reweight
+
+- make plots
 
 ---
 
