@@ -1,13 +1,13 @@
 # Higgs-Classification
 
 ---
-## MadGraph :
+## Madgraph :
 
 - Generate LHE samples : ggF, VBf, VH, ttH
 
 ---
 
-## Shower :
+## Showering :
 
 - Shower and Hadronization, jets merging with FxFx, all matching with PYTHIA8
 
@@ -15,7 +15,7 @@
 
 ---
 
-
+## analysis
 
 ---
 
