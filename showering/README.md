@@ -48,8 +48,7 @@ If nothing wrong, then you can do showering and preselection in fthis way
 * out.log: The presesction and Xection after matching will be in the bottom of this file.
            You also can read the particles infomation step by step in this file.
        
-### 3. `loop_out.py` can help to read the preselection rate and matching efficiency in your `.log`.
-	You should put all `.log` which belong to a production in a directory.
+### 3. `loop_out.py` can help to read the preselection rate and matching efficiency in your `.log`. You should put all `.log` which belong to a production in a directory.
 	 
 	```
 	python loop_out.py <where-is-your-log>/
