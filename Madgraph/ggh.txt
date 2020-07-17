@@ -13,17 +13,11 @@ set nevents 100000
 set lhaid 91500 #PDF4LHC15_nnlo_mc
 set ebeam1 6500
 set ebeam2 6500
-#set dynamical_scale_choice 2
 
 set parton_shower PYTHIA8
 set ickkw 3
-#set jetalgo -1
-#set jetradius 0.5
 set ptj 15.0
-#set etaj 4.0
 
-#set Qcut 30.0
-#set njmax 2 
 
 set pt_min_pdg {25:350}
 set pt_max_pdg {25:700}
