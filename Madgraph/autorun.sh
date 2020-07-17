@@ -2,8 +2,8 @@
 
 date
 
-this_path="/u4/alan/higgsproduction_1" 
-#store_path="/u2/alan-2/higgsproduction"
+this_path="<path-to-run-text-file>" 
+#store_path="<path-to-store>"
 
 echo "Start Running"
 
