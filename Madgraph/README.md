@@ -16,7 +16,7 @@ wget http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/H
  python <where-is-your-madgraph>/bin/mg5_aMC ggh.txt
  ```
  
- * the details are in `ggh.txt'
+ * the details are in `ggh.txt`
  
  
  ### VBF, Vh and ttH
@@ -26,7 +26,7 @@ wget http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/H
  python <where-is-your-madgraph>/bin/mg5_aMC <vbf.txt or vh.txt or tth.txt
  ```
  
- * the details are in `.txt' file
+ * the details are in `.txt` file
  
  
  
