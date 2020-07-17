@@ -3,7 +3,7 @@
 ---
 ## Madgraph :
 
-- Generate LHE samples : ggF, VBf, VH, ttH
+- Generate LHE samples : ggF, VBF, VH, ttH
 
 ---
 
