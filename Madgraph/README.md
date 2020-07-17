@@ -9,6 +9,7 @@
 
 ```
 wget http://feynrules.irmp.ucl.ac.be/raw-attachment/wiki/HiggsCharacterisation/HC_NLO_X0_UFO.zip
+upzip HC_NLO_X0_UFO.zip
 ```
  then use the folloing comment to excute and generate ggF samples.
  
