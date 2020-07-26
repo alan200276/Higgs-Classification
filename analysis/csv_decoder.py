@@ -9,6 +9,7 @@ import os
 import re
 import time
 import sys
+import copy
 from io import StringIO
 
 from itertools import groupby
@@ -116,54 +117,72 @@ def return_image_list(event_list, width=40, height=40):
 		image_list.append(np.array([image_0,image_1,image_2]))
 	return(image_list)
 
+
+def Rotate_Event_List(event_list,higgs_list):
+    #pt, eta, phi, m, id, isCharged
+    event_list_rotated = copy.deepcopy(event_list)
+    
+    for i in range(len(event_list_rotated)):
+        event_list_rotated[i][:,2] = event_list_rotated[i][:,2] + np.pi/2 - np.array(higgs_list)[i,2]
+        for j in range(len(event_list_rotated[i][:,2])):
+            if event_list_rotated[i][j,2] > np.pi:
+                event_list_rotated[i][j,2] = event_list_rotated[i][j,2] - 2*np.pi
+
+        # flip Eta(Higgs )
+        if np.array(higgs_list)[i,1] < 0:
+            event_list_rotated[i][:,1] = -1*event_list_rotated[i][:,1]
+            
+    return event_list_rotated
+
 # This method loads event files to produce:
 # event_list, mass_list, image_list, higgs_list, weight_list, files_read
 def load_events(path, contains, debug = False, max_read = float('inf'), max_files = float('inf'), weighted=True, \
-				pt_cut = 0, width=40, height=40):
-	print('Loading .csv event files from ' + path + ' containing \'' + contains + '\'')
-	reading_event_list = []
-	reading_mass_list = []
-	reading_image_list = []
-	reading_higgs_list = []
-	reading_weight_list = []
-	files_read = 0
-	print('List of files is: '+ str(os.listdir(path)))
-	for i in os.listdir(path):
-		print('Currently reading: '+ str(i))
-		
-		if (files_read == max_files):
-			break
-		if len(reading_event_list) >= max_read:
-			return(reading_event_list,reading_mass_list,reading_image_list,files_read)
-		if 'swp' in i:
-			continue
-		if os.path.isfile(os.path.join(path,i)) and (contains in i):
-			if debug:
-				print(i)
-				print(os.path.join(path,i))
-			if not weighted:				
-				raise Exception('Warning: this analysis does not use unweighted CSV format. Please check implementation.')		
-			
-			temp_event_list,temp_mass_list,temp_higgs_list,temp_weight_list = return_event_list(os.path.join(path,i),weighted=weighted,pt_cut=pt_cut)
-			
-			
-			temp_image_list = return_image_list(temp_event_list, width, height)
-			if (len(temp_image_list) != len(temp_mass_list)):
-				print('Image production failure: #image != #weight')
-				print('File: ' + str(os.path.join(path,i)))
+                pt_cut = 0, width=40, height=40):
+    print('Loading .csv event files from ' + path + ' containing \'' + contains + '\'')
+    reading_event_list = []
+    reading_mass_list = []
+    reading_image_list = []
+    reading_higgs_list = []
+    reading_weight_list = []
+    files_read = 0
+    print('List of files is: '+ str(os.listdir(path)))
+    for i in os.listdir(path):
+        print('Currently reading: '+ str(i))
+        
+        if (files_read == max_files):
+            break
+        if len(reading_event_list) >= max_read:
+            return(reading_event_list,reading_mass_list,reading_image_list,files_read)
+        if 'swp' in i:
+            continue
+        if os.path.isfile(os.path.join(path,i)) and (contains in i):
+            if debug:
+                print(i)
+                print(os.path.join(path,i))
+            if not weighted:				
+                raise Exception('Warning: this analysis does not use unweighted CSV format. Please check implementation.')		
+            
+            temp_event_list,temp_mass_list,temp_higgs_list,temp_weight_list = return_event_list(os.path.join(path,i),weighted=weighted,pt_cut=pt_cut)
+            
+            
+            temp_image_list = return_image_list(temp_event_list, width, height)
+            
+            if (len(temp_image_list) != len(temp_mass_list)):
+                print('Image production failure: #image != #weight')
+                print('File: ' + str(os.path.join(path,i)))
 
-			reading_weight_list = reading_weight_list + temp_weight_list
-			reading_higgs_list = reading_higgs_list + temp_higgs_list
-			reading_event_list = reading_event_list + temp_event_list
-			reading_mass_list = reading_mass_list + temp_mass_list
-			reading_image_list = reading_image_list + temp_image_list
+            reading_weight_list = reading_weight_list + temp_weight_list
+            reading_higgs_list = reading_higgs_list + temp_higgs_list
+            reading_event_list = reading_event_list + temp_event_list
+            reading_mass_list = reading_mass_list + temp_mass_list
+            reading_image_list = reading_image_list + temp_image_list
+            
+            files_read = files_read + 1
 
-			files_read = files_read + 1
-
-			print(str(files_read) + 'files processed.')
-	#if not weighted:
-		#return(reading_event_list,reading_mass_list,reading_image_list,files_read)
-	return(reading_event_list,reading_mass_list,reading_image_list,reading_higgs_list,reading_weight_list,files_read)
+            print(str(files_read) + 'files processed.')
+    #if not weighted:
+        #return(reading_event_list,reading_mass_list,reading_image_list,files_read)
+    return(reading_event_list,reading_mass_list,reading_image_list,reading_higgs_list,reading_weight_list,files_read)
 
 # This is not used. 
 def return_fine_image_list(event_list, event_list_clustered, granularity, which_jet = 0, width=40, height=40):

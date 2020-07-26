@@ -54,7 +54,7 @@ def load_numpy(folder_name, process_name):
 		new_higgs, new_weight, new_image_list, \
 		new_recluster_images
 
-def save_numpy(folder_name, process_name, event_list, mass_list, higgs, weight,image_list,recluster_images):
+def save_numpy(folder_name, process_name, event_list, mass_list, higgs, weight,image_list, recluster_images):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
     if not os.path.exists(folder_name+'/'+ process_name + '_events/' ):
@@ -65,5 +65,6 @@ def save_numpy(folder_name, process_name, event_list, mass_list, higgs, weight,i
     np.save(folder_name+'/'+process_name+'_higgs.npy', higgs)
     np.save(folder_name+'/'+process_name+'_weight.npy', weight)
     np.save(folder_name+'/'+process_name+'_image_list.npy', image_list)
+#     np.save(folder_name+'/'+process_name+'_image_list_rotated.npy', image_list_rotated)
     np.save(folder_name+'/'+process_name+'_recluster_images.npy', recluster_images)
     np.save(folder_name+'/'+process_name+'_event_list.npy', event_list)

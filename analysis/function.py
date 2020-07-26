@@ -68,10 +68,19 @@ def Weight(process, name, PTmin = 400 , PTmax = 2000, index = 1 ):
 #     PTCUT = np.linspace(400,1250,int((1250-400)/10+1))
     
     if name == "ggF":
-        k = 0
+
+        for k in range(len(PTCUT_ggF)):
+            if PTCUT_ggF[k] >= 1250:
+                k = -1 
+                break
+            elif PTCUT_ggF[k] >= PTmin:
+                k = k 
+                break
+            elif PTCUT_ggF[k] < PTmin:
+                continue
 
         for i in range(len(PTCUT)-1):
-            if len(process[(process["PTH"] >= PTCUT[i]) & (process["PTH"] < PTCUT[i+1]) ]) == 0:
+            if len(process[(process["PTH"] >= PTCUT[i]) & (process["PTH"] < PTCUT[i+1]) ]) == 0 :
                 length = i
                 break
             else:
@@ -87,6 +96,7 @@ def Weight(process, name, PTmin = 400 , PTmax = 2000, index = 1 ):
                 
             weight.append(sum(bin_weights*reweight_factor))
             uncertainty_perbin.append(np.sqrt(np.sum((bin_weights*reweight_factor)**2)))
+#             uncertainty_perbin.append(np.sqrt(np.sum((abs(bin_weights)*reweight_factor))))
                 
 
 #         for i in range(len(PTCUT[:length+1])):
@@ -101,7 +111,17 @@ def Weight(process, name, PTmin = 400 , PTmax = 2000, index = 1 ):
                 totalweight.append(sum(weight[i:]))
                 uncertainty.append(np.sqrt(np.sum(np.array(uncertainty_perbin)[i:]**2)))
     else:
-        k = 0
+        
+        for k in range(len(LHCHXSWG_pt)):
+            if LHCHXSWG_pt[k] >= 800:
+                k = -1 
+                break
+            elif LHCHXSWG_pt[k] >= PTmin:
+                k = k 
+                break
+            elif LHCHXSWG_pt[k] < PTmin:
+                continue
+                
         for i in range(len(PTCUT)-1):
             if len(process[(process["PTH"] >= PTCUT[i]) & (process["PTH"] < PTCUT[i+1]) ]) == 0:
                 length = i
@@ -145,57 +165,66 @@ def error_propagation(xs_1,xs_2,xs_3,xs_4,error_1,error_2,error_3,error_4):
 
 
 def DrawCumulativeXection(ggh_weight, vbf_weight, vh_weight, tth_weight, 
-                          ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1):
-    fig, ax = plt.subplots(1,1, figsize=(9,6))
+                          ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
+                          note="",decay=0):
+    fig, ax = plt.subplots(1,1, figsize=(10,8),tight_layout = {'pad': 1})
 
     plt.fill_between(ggh_weight[0][:len(ggh_weight[2])], np.array(ggh_weight[2])*ggh_factor
                      -np.array(ggh_weight[4])*ggh_factor, 
                      np.array(ggh_weight[2])*ggh_factor
-                     +np.array(ggh_weight[4])*ggh_factor, color = 'green', alpha =0.5,linewidth=1)
+                     +np.array(ggh_weight[4])*ggh_factor, color = 'green', alpha =0.2,linewidth=1)
 
     plt.fill_between(vbf_weight[0][:len(vbf_weight[2])], np.array(vbf_weight[2])*vbf_factor
                      -np.array(vbf_weight[4])*vbf_factor, 
                      np.array(vbf_weight[2])*vbf_factor
-                     +np.array(vbf_weight[4])*vbf_factor, color = 'red', alpha =0.5,linewidth=1)
+                     +np.array(vbf_weight[4])*vbf_factor, color = 'red', alpha =0.2,linewidth=1)
 
     plt.fill_between(vh_weight[0][:len(vh_weight[2])], np.array(vh_weight[2])*vh_factor
                      -np.array(vh_weight[4])*vh_factor, 
                      np.array(vh_weight[2])*vh_factor
-                     +np.array(vh_weight[4])*vh_factor, color = 'blue', alpha =0.5,linewidth=1)
+                     +np.array(vh_weight[4])*vh_factor, color = 'blue', alpha =0.2,linewidth=1)
 
     plt.fill_between(tth_weight[0][:len(tth_weight[2])], np.array(tth_weight[2])*tth_factor
                      -np.array(tth_weight[4])*tth_factor, 
                      np.array(tth_weight[2])*tth_factor
-                     +np.array(tth_weight[4])*tth_factor, color = 'magenta', alpha =0.5,linewidth=1)
+                     +np.array(tth_weight[4])*tth_factor, color = 'magenta', alpha =0.2,linewidth=1)
 
-    plt.plot(ggh_weight[0][:len(ggh_weight[2])],np.array(ggh_weight[2])*ggh_factor, color = "green",linewidth=3,label="ggF") #weighted
-    plt.plot(vbf_weight[0][:len(vbf_weight[2])],np.array(vbf_weight[2])*vbf_factor, color = "red",linewidth=3,label="VBF") #weighted
-    plt.plot(vh_weight[0][:len(vh_weight[2])],np.array(vh_weight[2])*vh_factor, color = "blue",linewidth=3,label="VH") #weighted
-    plt.plot(tth_weight[0][:len(tth_weight[2])],np.array(tth_weight[2])*tth_factor, color = "magenta",linewidth=3,label="ttH") #weighted
+    plt.plot(ggh_weight[0][:len(ggh_weight[2])],np.array(ggh_weight[2])*ggh_factor, "-",
+             color = "green",linewidth=5,label="ggF") #weighted
+    plt.plot(vbf_weight[0][:len(vbf_weight[2])],np.array(vbf_weight[2])*vbf_factor, "-.",
+             color = "red",linewidth=5,label="VBF") #weighted
+    plt.plot(vh_weight[0][:len(vh_weight[2])],np.array(vh_weight[2])*vh_factor, "--",
+             color = "blue",linewidth=5,label="VH") #weighted
+    plt.plot(tth_weight[0][:len(tth_weight[2])],np.array(tth_weight[2])*tth_factor, ":",
+             color = "magenta",linewidth=5,label="ttH") #weighted
 
     plt.yscale("log")
     plt.xlim((400,1250))
     plt.ylim((1E-6,1E-1))
-    ax.tick_params(axis='x', labelsize=15)
-    ax.tick_params(axis='y', labelsize=15)
+    ax.tick_params(axis='x', labelsize=25)
+    ax.tick_params(axis='y', labelsize=25)
     ax.yaxis.set_ticks_position('both')
     plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
     plt.tick_params(axis='x', direction="in")
     plt.grid(True)
-    plt.xlabel('$P^H_{t}$ [GeV]', fontsize=25,horizontalalignment='right',x=1)
-    plt.ylabel("$\sum(p^H_t)$ [pb] ",fontsize=25,horizontalalignment='right',y=1)
-    plt.legend(ncol=1,fontsize=20)
+    plt.xlabel('$p^H_{T}$ [GeV]', fontsize=30,horizontalalignment='right',x=1)
+    if decay==0:
+        plt.ylabel("$\sum(p^H_T)$ [pb] ",fontsize=30,horizontalalignment='right',y=1)
+    if decay==1:
+        plt.ylabel("$\sum(p^H_T)$ x BR [pb] ",fontsize=30,horizontalalignment='right',y=1)
+    plt.legend(ncol=1,fontsize=30)
     plt.tight_layout()
 
 
-    # plt.savefig("./Higgs_Pt/Cumulative_Xection", transparent=True)
+    plt.savefig("./Higgs_Pt/Cumulative_Xection"+str(note)+".pdf", transparent=True)
     plt.show()
     
     
 def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight, 
-                   ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1):
+                   ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
+                   note=""):
     
-    fig, ax = plt.subplots(1,1, figsize=(9,6))
+    fig, ax = plt.subplots(1,1, figsize=(10,8))
 
     length = min(len(ggh_weight[2]),len(vbf_weight[2]),len(vh_weight[2]),len(tth_weight[2]))-1
 
@@ -210,7 +239,7 @@ def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight,
                              )
 
     total_Xection = []
-    vbf_rate, vh_rate, tth_rate = [], [], []
+#     vbf_rate, vh_rate, tth_rate = [], [], []
 
 
     for i in range(length): 
@@ -224,41 +253,191 @@ def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight,
     plt.fill_between(ggh_weight[0][:length], np.array(ggh_weight[2])[:length]/total_Xection*ggh_factor 
                      -np.array(error[1]), 
                      np.array(ggh_weight[2])[:length]/total_Xection*ggh_factor 
-                     +np.array(error[1]), color = 'green', alpha =0.5,linewidth=1)
+                     +np.array(error[1]), color = 'green', alpha =0.2,linewidth=1)
 
     plt.fill_between(vbf_weight[0][:length], np.array(vbf_weight[2])[:length]/total_Xection*vbf_factor
                      -np.array(error[2]), 
                      np.array(vbf_weight[2])[:length]/total_Xection*vbf_factor
-                     +np.array(error[2]), color = 'red', alpha =0.5,linewidth=1)
+                     +np.array(error[2]), color = 'red', alpha =0.2,linewidth=1)
 
     plt.fill_between(vh_weight[0][:length], np.array(vh_weight[2])[:length]/total_Xection*vh_factor
                      -np.array(error[3]), 
                      np.array(vh_weight[2])[:length]/total_Xection*vh_factor
-                     +np.array(error[3]), color = 'blue', alpha =0.5,linewidth=1)
+                     +np.array(error[3]), color = 'blue', alpha =0.2,linewidth=1)
 
     plt.fill_between(tth_weight[0][:length], np.array(tth_weight[2])[:length]/total_Xection*tth_factor
                      -np.array(error[4]), 
                      np.array(tth_weight[2])[:length]/total_Xection*tth_factor
-                     +np.array(error[4]), color = 'magenta', alpha =0.5,linewidth=1)
+                     +np.array(error[4]), color = 'magenta', alpha =0.2,linewidth=1)
     
-    plt.plot(ggh_weight[0][:length],np.array(ggh_weight[2])[:length]/total_Xection*ggh_factor , color = "green",linewidth=3,label="ggF") #weighted
-    plt.plot(vbf_weight[0][:length],np.array(vbf_weight[2])[:length]/total_Xection*vbf_factor, color = "red",linewidth=3,label="VBF") #weighted
-    plt.plot(vh_weight[0][:length],np.array(vh_weight[2])[:length]/total_Xection*vh_factor, color = "blue",linewidth=3,label="VH") #weighted
-    plt.plot(tth_weight[0][:length],np.array(tth_weight[2])[:length]/total_Xection*tth_factor, color = "magenta",linewidth=3,label="ttH") #weighted
+    plt.plot(ggh_weight[0][:length],np.array(ggh_weight[2])[:length]/total_Xection*ggh_factor , "-",
+             color = "green",linewidth=5,label="ggF") #weighted
+    plt.plot(vbf_weight[0][:length],np.array(vbf_weight[2])[:length]/total_Xection*vbf_factor, "-.",
+             color = "red",linewidth=5,label="VBF") #weighted
+    plt.plot(vh_weight[0][:length],np.array(vh_weight[2])[:length]/total_Xection*vh_factor, "--",
+             color = "blue",linewidth=5,label="VH") #weighted
+    plt.plot(tth_weight[0][:length],np.array(tth_weight[2])[:length]/total_Xection*tth_factor, ":",
+             color = "magenta",linewidth=5,label="ttH") #weighted
 
     # plt.yscale("log")
     plt.xlim((400,1250))
     plt.ylim((0,1))
+    ax.tick_params(axis='x', labelsize=25)
+    ax.tick_params(axis='y', labelsize=25)
+    ax.yaxis.set_ticks_position('both')
+    plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
+    plt.tick_params(axis='x', direction="in")
+    plt.grid(True)
+    plt.xlabel('$p^H_{T}$ [GeV]', fontsize=30,horizontalalignment='right',x=1)
+    plt.ylabel("Fractional Contribution",fontsize=30,horizontalalignment='right',y=1)
+    plt.legend(ncol=1,fontsize=30)
+    plt.tight_layout()
+
+    plt.savefig("./Higgs_Pt/CumulativeXection_Ratio"+str(note)+".pdf", transparent=True)
+    plt.show()
+    
+def DrawFractionalImprovement(ggh_weight_before, vbf_weight_before, vh_weight_before, tth_weight_before, 
+                              ggh_weight_after, vbf_weight_after, vh_weight_after, tth_weight_after, 
+                              ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
+                              note=""):
+    
+    fig, ax = plt.subplots(1,1, figsize=(9,6))
+
+    length_befor = min(len(ggh_weight_before[2]),len(vbf_weight_before[2]),len(vh_weight_before[2]),len(tth_weight_before[2]))-1
+    length_after = min(len(ggh_weight_after[2]),len(vbf_weight_after[2]),len(vh_weight_after[2]),len(tth_weight_after[2]))-1
+    length = min(length_befor,length_after)
+    
+    total_Xection_before, total_Xection_after = [], []
+    for i in range(length): 
+        total_Xection_before.append(np.array(ggh_weight_before[2])[i]*ggh_factor +\
+                    np.array(vbf_weight_before[2])[i]*vbf_factor + \
+                    np.array(vh_weight_before[2])[i]*vh_factor + \
+                    np.array(tth_weight_before[2])[i]*tth_factor)
+
+        total_Xection_after.append(np.array(ggh_weight_after[2])[i]*ggh_factor +\
+                    np.array(vbf_weight_after[2])[i]*vbf_factor + \
+                    np.array(vh_weight_after[2])[i]*vh_factor + \
+                    np.array(tth_weight_after[2])[i]*tth_factor)
+
+    total_Xection_before, total_Xection_after = np.array(total_Xection_before), np.array(total_Xection_after)
+    
+    ggh_fraction_imporvement = (np.array(ggh_weight_after[2])[:length]/total_Xection_after)/ \
+                               (np.array(ggh_weight_before[2])[:length]/total_Xection_before)
+    
+    vbf_fraction_imporvement = (np.array(vbf_weight_after[2])[:length]/total_Xection_after)/ \
+                               (np.array(vbf_weight_before[2])[:length]/total_Xection_before)
+    
+    vh_fraction_imporvement = (np.array(vh_weight_after[2])[:length]/total_Xection_after)/ \
+                               (np.array(vh_weight_before[2])[:length]/total_Xection_before)
+    
+    tth_fraction_imporvement = (np.array(tth_weight_after[2])[:length]/total_Xection_after)/ \
+                               (np.array(tth_weight_before[2])[:length]/total_Xection_before)
+    
+    plt.plot(ggh_weight_before[0][:length],ggh_fraction_imporvement, color = "green",linewidth=3,label="ggF")
+    plt.plot(vbf_weight_before[0][:length],vbf_fraction_imporvement, color = "red",linewidth=3,label="VBF")
+    plt.plot(vh_weight_before[0][:length],vh_fraction_imporvement, color = "blue",linewidth=3,label="VH") #weighted
+    plt.plot(tth_weight_before[0][:length],tth_fraction_imporvement, color = "magenta",linewidth=3,label="ttH") #weighted
+    
+    
+#     plt.yscale("log")
+    plt.xlim((400,1250))
+    plt.ylim((0,2.5))
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
     ax.yaxis.set_ticks_position('both')
     plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
     plt.tick_params(axis='x', direction="in")
     plt.grid(True)
-    plt.xlabel('$P^H_{t}$ [GeV]', fontsize=25,horizontalalignment='right',x=1)
-    plt.ylabel("Fractional Contribution",fontsize=20,horizontalalignment='right',y=1)
-    plt.legend(ncol=1,fontsize=20)
+    plt.xlabel('$p^H_{t}$ [GeV]', fontsize=25,horizontalalignment='right',x=1)
+    plt.ylabel("Fractional Imporvement",fontsize=20,horizontalalignment='right',y=1)
+    plt.legend(ncol=1,fontsize=15)
     plt.tight_layout()
 
-    # plt.savefig("./Higgs_Pt/CumulativeXection_w_BDTcut_Ratio", transparent=True)
+    plt.savefig("./Higgs_Pt/FractionalImporvement"+str(note)+".pdf", transparent=True)
+    plt.show()
+    
+    
+    
+def error_propagation_efficiency(xs_before,xs_after,error_before,error_after):
+    xs_before,xs_after,error_before,error_after = np.array(xs_before),np.array(xs_after),np.array(error_before),np.array(error_after)
+    length = min(len(error_before),len(error_after))
+    div_error = []
+    
+    for i in range(length):
+        div_error.append((xs_after[i]/xs_before[i])*np.sqrt((error_before[i]/xs_before[i])**2+(error_after[i]/xs_after[i])**2))
+    
+    return div_error
+
+
+def Efficiency(ggh_weight_before, vbf_weight_before, vh_weight_before, tth_weight_before, 
+                              ggh_weight_after, vbf_weight_after, vh_weight_after, tth_weight_after, 
+                              ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
+                              note=""):
+    
+    fig, ax = plt.subplots(1,1, figsize=(10,8))
+
+    length_befor = min(len(ggh_weight_before[1]),len(vbf_weight_before[1]),len(vh_weight_before[1]),len(tth_weight_before[1]))-1
+    length_after = min(len(ggh_weight_after[1]),len(vbf_weight_after[1]),len(vh_weight_after[1]),len(tth_weight_after[1]))-1
+    length = min(length_befor,length_after)
+    
+    ggF_error = error_propagation_efficiency(ggh_weight_before[1][:length],ggh_weight_after[1][:length],ggh_weight_before[3][:length],ggh_weight_after[3][:length])
+    VBF_error = error_propagation_efficiency(vbf_weight_before[1][:length],vbf_weight_after[1][:length],vbf_weight_before[3][:length],vbf_weight_after[3][:length])
+    VH_error = error_propagation_efficiency(vh_weight_before[1][:length],vh_weight_after[1][:length],vh_weight_before[3][:length],vh_weight_after[3][:length])
+    ttH_error = error_propagation_efficiency(tth_weight_before[1][:length],tth_weight_after[1][:length],tth_weight_before[3][:length],tth_weight_after[3][:length])
+    
+    
+    ggh_fraction_efficiency = (np.array(ggh_weight_after[1])[:length])/ \
+                               (np.array(ggh_weight_before[1])[:length])
+    
+    vbf_fraction_efficiency = (np.array(vbf_weight_after[1])[:length])/ \
+                               (np.array(vbf_weight_before[1])[:length])
+    
+    vh_fraction_efficiency = (np.array(vh_weight_after[1])[:length])/ \
+                               (np.array(vh_weight_before[1])[:length])
+    
+    tth_fraction_efficiency = (np.array(tth_weight_after[1])[:length])/ \
+                               (np.array(tth_weight_before[1])[:length])
+    
+    plt.fill_between(ggh_weight_before[0][:length], 
+                     ggh_fraction_efficiency-ggF_error,
+                     ggh_fraction_efficiency+ggF_error,
+                    color = 'green', alpha =0.2,linewidth=1)
+    
+#     plt.fill_between(vbf_weight_before[0][:length], 
+#                      vbf_fraction_efficiency-VBF_error,
+#                      vbf_fraction_efficiency+VBF_error,
+#                     color = 'red', alpha =0.2,linewidth=1)
+    
+#     plt.fill_between(vh_weight_before[0][:length], 
+#                      vh_fraction_efficiency-VH_error,
+#                      vh_fraction_efficiency+VH_error,
+#                     color = 'blue', alpha =0.2,linewidth=1)
+#     plt.fill_between(tth_weight_before[0][:length], 
+#                  tth_fraction_efficiency-ttH_error,
+#                  tth_fraction_efficiency+ttH_error,
+#                 color = 'magenta', alpha =0.2,linewidth=1)
+    
+    plt.plot(ggh_weight_before[0][:length],ggh_fraction_efficiency, "-",
+             color = "green",linewidth=5,label="ggF")
+#     plt.plot(vbf_weight_before[0][:length],vbf_fraction_efficiency, "-.",
+#              color = "red",linewidth=5,label="VBF")
+#     plt.plot(vh_weight_before[0][:length],vh_fraction_efficiency, "--",
+#              color = "blue",linewidth=5,label="VH") #weighted
+#     plt.plot(tth_weight_before[0][:length],tth_fraction_efficiency, ":",
+#              color = "magenta",linewidth=5,label="ttH") #weighted
+    
+    plt.xlim((400,1250))
+    plt.ylim((0,1))
+    ax.tick_params(axis='x', labelsize=20)
+    ax.tick_params(axis='y', labelsize=20)
+    ax.yaxis.set_ticks_position('both')
+    plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
+    plt.tick_params(axis='x', direction="in")
+    plt.grid(True)
+    plt.xlabel('$p^H_{T}$ [GeV]', fontsize=30,horizontalalignment='right',x=1)
+    plt.ylabel("ggF Efficiency",fontsize=30,horizontalalignment='right',y=1)
+#     plt.legend(bbox_to_anchor=(0.3, 0.5),ncol=1,fontsize=30)
+    plt.tight_layout()
+
+    plt.savefig("./Higgs_Pt/Efficiency"+str(note)+".pdf", transparent=True)
     plt.show()

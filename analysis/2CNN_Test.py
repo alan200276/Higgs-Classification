@@ -69,8 +69,8 @@ class DataGenerator:
         self.dataframe = dataframe
         # self.rawX = dataX
         # self.rawY = dataY
-        self.graddir_path_event = "/dicos_ui_home/alanchung/Higgs/2CNN_Model_for_train_2/"
-        self.graddir_path_jet = "/dicos_ui_home/alanchung/Higgs/2CNN_Model_for_train_2/"
+        self.graddir_path_event = "/dicos_ui_home/alanchung/Higgs/2CNN_Model_for_test_2/"
+        self.graddir_path_jet = "/dicos_ui_home/alanchung/Higgs/2CNN_Model_for_test_2/"
         self.on_epoch_end()
 
     def _build_pipeline(self, dataX1, dataX2, labelY):
@@ -99,7 +99,7 @@ class DataGenerator:
             return (dataX1, dataX2), labelY
 
         dataset = tf.data.Dataset.from_tensor_slices( (dataX1, dataX2, labelY) )
-        dataset = dataset.shuffle(self.batch_size * 8000)
+#         dataset = dataset.shuffle(self.batch_size * 8000)
         dataset = dataset.repeat()
         dataset = dataset.map(preprocess_fn, num_parallel_calls=tf.data.experimental.AUTOTUNE)
         dataset = dataset.batch(self.batch_size)
@@ -125,102 +125,18 @@ class DataGenerator:
         self._build_pipeline(dataX1, dataX2 ,labelY)
         
 ######################################################################################
-
-"""
-Model
-"""
-def return_pad_me(padding):
-    def pad_me(x):
-        #FRANK# x[:,:,:y,:] slice x off from y at the given axis.
-        return(tf.concat((x,x[:,:,:padding,:]),2))
-#         return(tf.concat((2,x,x[:,:,:padding,:])))
-    return(pad_me)
-
-
-input_shape = np.load("./2CNN_Model_for_train_2/JetTest_1/x_test_jet_1.npz")["arr_0"].shape
-print(input_shape)
-model_event = Sequential(name = 'Sequential_for_event')
-model_event.add(Lambda(return_pad_me(4),
-                 input_shape=input_shape, name = 'event'))
-model_event.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
-                 activation='relu',
-                 data_format='channels_first', name = 'event_2D_1'))
-model_event.add(Lambda(return_pad_me(1),
-                 input_shape=input_shape, name = 'event_padding_1'))
-model_event.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2),data_format='channels_first', name = 'event_MaxPooling_1'))
-model_event.add(Lambda(return_pad_me(4),input_shape=input_shape, name = 'event_padding_2'))
-model_event.add(Conv2D(64, (5, 5), activation='relu',data_format="channels_first", name = 'event_2D_2'))
-model_event.add(Lambda(return_pad_me(1),input_shape=input_shape, name = 'event_padding_3'))
-model_event.add(MaxPooling2D(pool_size=(2, 2),data_format="channels_first", name = 'event_MaxPooling_2'))
-model_event.add(Flatten(name = 'event_flatten'))
-model_event.add(Dense(300, activation='relu', name = 'event_dense_1'))
-
-model_event.add(Dropout(0.1))
-
-
-model_jet = Sequential(name = 'Sequential_for_jet')
-model_jet.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
-                 activation='relu',
-                data_format='channels_first',input_shape=input_shape, name = 'jet'))
-model_jet.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2),data_format='channels_first', name = 'jet_MaxPooling_1'))
-model_jet.add(Conv2D(64, (5, 5), activation='relu',data_format='channels_first', name = 'jet_2D_1'))
-model_jet.add(MaxPooling2D(pool_size=(2, 2),data_format='channels_first', name = 'jet_MaxPooling_2'))
-model_jet.add(Flatten(name = 'jet_flatten'))
-model_jet.add(Dense(300, activation='relu', name = 'jet_dense_1'))
-
-model_jet.add(Dropout(0.1))
-
-
-mergedOut = Concatenate()([model_event.output,model_jet.output])
-# mergedOut = Dense(1, activation='sigmoid')(mergedOut)
-mergedOut = Dense(4, activation='softmax')(mergedOut)
-
-newModel = Model([model_event.input,model_jet.input], mergedOut,name = 'Combined')
-
-
-model_opt = keras.optimizers.Adadelta()
-
-newModel.compile(loss="categorical_crossentropy",#keras.losses.binary_crossentropy
-              optimizer=model_opt,
-              metrics=['accuracy'])
-newModel.summary()
-        
-######################################################################################
-
-dataframe_train = pd.read_csv("./2CNN_Model_for_train_2/Train_dict.csv")
-dataframe_val = pd.read_csv("./2CNN_Model_for_train_2/Val_dict.csv")
-print("# of Training Data: {} ".format(dataframe_train.shape[0]))
-train_gen = DataGenerator(dataframe_train, 512)
-valid_gen = DataGenerator(dataframe_val, 512)
-
-
-
-######################################################################################
 # time counter
 print(time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
 ticks_1 = time.time()
 ############################################################################################################################################################
 
-
-
-
-check_list=[]
-csv_logger = CSVLogger('./2CNN_Model_for_train_2/training_log.csv')
-checkpoint = ModelCheckpoint(
-                    filepath='./2CNN_Model_for_train_2/checkmodel.h5',
-                    save_best_only=True,
-                    verbose=1)
-check_list.append(checkpoint)
-check_list.append(csv_logger)
-newModel.fit(train_gen.dataset,
-                    steps_per_epoch = train_gen.__len__(),
-                    validation_data = valid_gen.dataset,
-                    validation_steps= valid_gen.__len__(),
-                    epochs=100,
-                    callbacks=check_list,
-                    verbose=1)
-
-newModel.save("./2CNN_Model_for_train_2/model.h5")
+dataframe_test = pd.read_csv("./2CNN_Model_for_test_2/Test_dict.csv")
+test_gen = DataGenerator(dataframe_test, 100)
+print(test_gen.__len__())
+print("# of Test Data: {} ".format(dataframe_test.shape[0]))
+Model = load_model("./2CNN_Model_for_train_2_zerocenter/model.h5")
+prediction = Model.predict(test_gen.dataset,steps= test_gen.__len__())
+np.save("./2CNN_pre_2",prediction)
 
 ############################################################################################################################################################
 ticks_2 = time.time()
