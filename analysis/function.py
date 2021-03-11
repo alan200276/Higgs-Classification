@@ -167,7 +167,7 @@ def error_propagation(xs_1,xs_2,xs_3,xs_4,error_1,error_2,error_3,error_4):
 def DrawCumulativeXection(ggh_weight, vbf_weight, vh_weight, tth_weight, 
                           ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
                           note="",decay=0):
-    fig, ax = plt.subplots(1,1, figsize=(10,8),tight_layout = {'pad': 1})
+    fig, ax = plt.subplots(1,1, figsize=(12,8),tight_layout = {'pad': 1})
 
     plt.fill_between(ggh_weight[0][:len(ggh_weight[2])], np.array(ggh_weight[2])*ggh_factor
                      -np.array(ggh_weight[4])*ggh_factor, 
@@ -198,6 +198,22 @@ def DrawCumulativeXection(ggh_weight, vbf_weight, vh_weight, tth_weight,
     plt.plot(tth_weight[0][:len(tth_weight[2])],np.array(tth_weight[2])*tth_factor, ":",
              color = "magenta",linewidth=5,label="ttH") #weighted
 
+    
+    plt.text(x=600,y=3E-2, s="$\sqrt{s}$ = 13 TeV",fontsize=23)    
+    plt.text(x=600,y=1.5E-2, s="MadGraph5_aMC@NLO 2.7.2",fontsize=23)
+    plt.text(x=600,y=7E-3, s="PYTHIA 8.244",fontsize=23)   
+    plt.text(x=600,y=3.5E-3, s="PDF4LHC15_nnlo_mc",fontsize=23) 
+    plt.text(x=600,y=1.7E-3, s="$\mathrm{M_H}$ = 125 GeV",fontsize=23)
+#     plt.text(x=600,y=9.5E-4, s="p(ggF) > 0.42",fontsize=23) 
+    plt.text(x=600,y=9.5E-4, s="p(ttH) > 0.84",fontsize=23) 
+    
+#     plt.text(x=630,y=3E-2, s="$\sqrt{s}$ = 13 TeV",fontsize=23)    
+#     plt.text(x=630,y=1.5E-2, s="MadGraph5_aMC@NLO 2.7.2",fontsize=23)
+#     plt.text(x=630,y=7E-3, s="PYTHIA 8.244",fontsize=23)   
+#     plt.text(x=630,y=3.5E-3, s="PDF4LHC15_nnlo_mc",fontsize=23) 
+#     plt.text(x=630,y=1.7E-3, s="$\mathrm{M_H}$ = 125 GeV",fontsize=23)
+#     plt.text(x=630,y=0.8E-3, s="p(ggF) > 0.36",fontsize=23) 
+    
     plt.yscale("log")
     plt.xlim((400,1250))
     plt.ylim((1E-6,1E-1))
@@ -206,17 +222,17 @@ def DrawCumulativeXection(ggh_weight, vbf_weight, vh_weight, tth_weight,
     ax.yaxis.set_ticks_position('both')
     plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
     plt.tick_params(axis='x', direction="in")
-    plt.grid(True)
+    plt.grid(True, alpha=0.5)
     plt.xlabel('$p^H_{T}$ [GeV]', fontsize=30,horizontalalignment='right',x=1)
     if decay==0:
         plt.ylabel("$\sum(p^H_T)$ [pb] ",fontsize=30,horizontalalignment='right',y=1)
     if decay==1:
         plt.ylabel("$\sum(p^H_T)$ x BR [pb] ",fontsize=30,horizontalalignment='right',y=1)
-    plt.legend(ncol=1,fontsize=30)
+    plt.legend(ncol=1,fontsize=30, edgecolor = "w",fancybox=False, framealpha=0)
     plt.tight_layout()
 
 
-    plt.savefig("./Higgs_Pt/Cumulative_Xection"+str(note)+".pdf", transparent=True)
+    plt.savefig("./Plots/Cumulative_Xection"+str(note)+".pdf", transparent=True, bbox_inches='tight')
     plt.show()
     
     
@@ -224,7 +240,7 @@ def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight,
                    ggh_factor=1, vbf_factor=1, vh_factor=1, tth_factor=1,
                    note=""):
     
-    fig, ax = plt.subplots(1,1, figsize=(10,8))
+    fig, ax = plt.subplots(1,1, figsize=(12,8))
 
     length = min(len(ggh_weight[2]),len(vbf_weight[2]),len(vh_weight[2]),len(tth_weight[2]))-1
 
@@ -280,6 +296,20 @@ def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight,
              color = "magenta",linewidth=5,label="ttH") #weighted
 
     # plt.yscale("log")
+#     plt.text(x=600,y=0.9, s="$\sqrt{s}$ = 13 TeV",fontsize=23)    
+#     plt.text(x=600,y=0.83, s="MadGraph5_aMC@NLO 2.7.2",fontsize=23)
+#     plt.text(x=600,y=0.76, s="PYTHIA 8.244",fontsize=23)   
+#     plt.text(x=600,y=0.69, s="PDF4LHC15_nnlo_mc",fontsize=23)
+#     plt.text(x=600,y=0.63, s="$\mathrm{M_H}$ = 125 GeV",fontsize=23) 
+    
+    
+    plt.text(x=630,y=0.63, s="$\sqrt{s}$ = 13 TeV",fontsize=23)    
+    plt.text(x=630,y=0.56, s="MadGraph5_aMC@NLO 2.7.2",fontsize=23)
+    plt.text(x=630,y=0.49, s="PYTHIA 8.244",fontsize=23)   
+    plt.text(x=630,y=0.42, s="PDF4LHC15_nnlo_mc",fontsize=23)
+    plt.text(x=630,y=0.35, s="$\mathrm{M_H}$ = 125 GeV",fontsize=23) 
+    plt.text(x=630,y=0.28, s="p(ggF) > 0.42",fontsize=23) 
+    
     plt.xlim((400,1250))
     plt.ylim((0,1))
     ax.tick_params(axis='x', labelsize=25)
@@ -287,13 +317,13 @@ def DrawFractional(ggh_weight, vbf_weight, vh_weight, tth_weight,
     ax.yaxis.set_ticks_position('both')
     plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
     plt.tick_params(axis='x', direction="in")
-    plt.grid(True)
+    plt.grid(True, alpha=0.5)
     plt.xlabel('$p^H_{T}$ [GeV]', fontsize=30,horizontalalignment='right',x=1)
     plt.ylabel("Fractional Contribution",fontsize=30,horizontalalignment='right',y=1)
-    plt.legend(ncol=1,fontsize=30)
+    plt.legend(loc="best",ncol=1,fontsize=30, edgecolor = "w",fancybox=False, framealpha=0)
     plt.tight_layout()
 
-    plt.savefig("./Higgs_Pt/CumulativeXection_Ratio"+str(note)+".pdf", transparent=True)
+    plt.savefig("./Plots/CumulativeXection_Ratio"+str(note)+".pdf", transparent=True, bbox_inches='tight')
     plt.show()
     
 def DrawFractionalImprovement(ggh_weight_before, vbf_weight_before, vh_weight_before, tth_weight_before, 
@@ -347,13 +377,13 @@ def DrawFractionalImprovement(ggh_weight_before, vbf_weight_before, vh_weight_be
     ax.yaxis.set_ticks_position('both')
     plt.tick_params(axis='y', which='both', labelleft='on',labelright=0,direction="in")
     plt.tick_params(axis='x', direction="in")
-    plt.grid(True)
+    plt.grid(True, alpha=0.5)
     plt.xlabel('$p^H_{t}$ [GeV]', fontsize=25,horizontalalignment='right',x=1)
     plt.ylabel("Fractional Imporvement",fontsize=20,horizontalalignment='right',y=1)
     plt.legend(ncol=1,fontsize=15)
     plt.tight_layout()
 
-    plt.savefig("./Higgs_Pt/FractionalImporvement"+str(note)+".pdf", transparent=True)
+#     plt.savefig("./Higgs_Pt/FractionalImporvement"+str(note)+".pdf", transparent=True)
     plt.show()
     
     
@@ -439,5 +469,5 @@ def Efficiency(ggh_weight_before, vbf_weight_before, vh_weight_before, tth_weigh
 #     plt.legend(bbox_to_anchor=(0.3, 0.5),ncol=1,fontsize=30)
     plt.tight_layout()
 
-    plt.savefig("./Higgs_Pt/Efficiency"+str(note)+".pdf", transparent=True)
+#     plt.savefig("./Higgs_Pt/Efficiency"+str(note)+".pdf", transparent=True)
     plt.show()
